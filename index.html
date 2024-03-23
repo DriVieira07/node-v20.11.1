@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificador de Palíndromo</title>
+</head>
+<body>
+    <h1>Verificador de Palíndromo</h1>
+    <!-- Formulário para digitar a palavra -->
+    <form id="formPalavra">
+        <label for="palavra">Digite a palavra:</label>
+        <input type="text" id="palavra" name="palavra" required>
+        <button type="submit">Verificar</button>
+    </form>
+    <!-- Div para exibir os resultados -->
+    <div id="resultado"></div>
+
+    <script>
+        // Função para lidar com o envio do formulário
+        document.getElementById('formPalavra').addEventListener('submit', async function(event) {
+            // Impede o comportamento padrão do formulário (recarregar a página)
+            event.preventDefault();
+            // Obtém a palavra digitada
+            const palavra = document.getElementById('palavra').value;
+
+            try {
+                // Faz a requisição POST para o servidor local
+                const response = await fetch('/api/manipulacao-string', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ texto: palavra })
+                });
+                // Converte a resposta para JSON
+                const data = await response.json();
+                // Exibe os resultados na div 'resultado'
+                document.getElementById('resultado').innerHTML = `
+                    <p>É um palíndromo? ${data.palindromo}</p>
+                    <p>Ocorrências de caracteres: ${JSON.stringify(data.ocorrencias_caracteres)}</p>
+                `;
+            } catch (error) {
+                console.error('Erro:', error);
+            }
+        });
+    </script>
+</body>
+</html>
